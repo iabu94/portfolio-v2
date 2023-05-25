@@ -1,13 +1,25 @@
 "use client";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Cursor, useTypewriter } from "react-simple-typewriter";
 
 export default function Home() {
   const [activeLink, setActiveLink] = useState("");
+  const [sticky, setSticky] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [text, count] = useTypewriter({
+    words: ["Full Stack Developer", "Blogger", "YouTuber"],
+    loop: true,
+    deleteSpeed: 20,
+  });
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll("section");
-      const navLinks = document.querySelectorAll("header nav a");
 
       sections.forEach((sec) => {
         const top = window.scrollY;
@@ -19,22 +31,64 @@ export default function Home() {
           setActiveLink(id);
         }
       });
+
+      setSticky(window.scrollY > 100);
+      setIsOpen(false);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const initial = {
+    opacity: 0,
+  };
+
+  const fromTopInitial = {
+    ...initial,
+    y: "-80px",
+  };
+
+  const fromBottomInitial = {
+    ...initial,
+    y: "80px",
+  };
+
+  const fromLeftInitial = {
+    ...initial,
+    x: "-80px",
+  };
+
+  const fromRightInitial = {
+    ...initial,
+    x: "80px",
+  };
+
+  const inViewAnimation = {
+    y: 0,
+    x: 0,
+    opacity: 1,
+    transition: {
+      ease: "easeOut",
+      duration: 2,
+      animationDelay: 0.2,
+    },
+  };
+
   return (
     <>
       {/* Header Section */}
-      <header className="header">
+      <header className={"header" + (sticky ? " sticky" : "")}>
         <a href="#" className="logo">
           Portfolio
         </a>
-        <i className="bx bx-menu" id="menu-icon"></i>
+        <i
+          className={"bx " + (isOpen ? "bx-x" : "bx-menu")}
+          id="menu-icon"
+          onClick={handleClick}
+        ></i>
 
-        <nav className="navbar">
+        <nav className={"navbar " + (isOpen ? "active" : "")}>
           <a href="#home" className={activeLink == "home" ? "active" : ""}>
             Home
           </a>
@@ -64,16 +118,25 @@ export default function Home() {
 
       {/* Home Section */}
       <section className="home" id="home">
-        <div className="home-content">
+        <motion.div
+          className="home-content"
+          initial={fromTopInitial}
+          whileInView={inViewAnimation}
+        >
           <h3>Hello, It&apos;s Me</h3>
-          <h1>Abdullah Mansoor</h1>
+          <motion.h1 initial={fromLeftInitial} whileInView={inViewAnimation}>
+            Abdullah Mansoor
+          </motion.h1>
           <h3>
-            And I&apos;m a <span>Full Stack Developer</span>
+            <div className="">
+              And I&apos;m a <span>{text}</span>
+              <Cursor cursorColor="#0ef" />
+            </div>
           </h3>
-          <p>
+          <motion.p initial={fromRightInitial} whileInView={inViewAnimation}>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore
             aliquam, modi aspernatur placeat architecto amet laudantium id.
-          </p>
+          </motion.p>
           <div className="social-media">
             <a href="#">
               <i className="bx bxl-facebook"></i>
@@ -91,22 +154,38 @@ export default function Home() {
           <a href="#" className="btn">
             Download CV
           </a>
-        </div>
+        </motion.div>
 
-        <div className="home-img">
+        <motion.div
+          initial={fromBottomInitial}
+          whileInView={inViewAnimation}
+          className="home-img"
+        >
           <img src="/pp.jpeg" alt="" />
-        </div>
+        </motion.div>
       </section>
 
       {/* About Section */}
       <section className="about" id="about">
-        <div className="about-img">
+        <motion.div
+          initial={fromLeftInitial}
+          whileInView={inViewAnimation}
+          className="about-img"
+        >
           <img src="pp.jpeg" alt="" />
-        </div>
-        <div className="about-content">
-          <h2 className="heading">
+        </motion.div>
+        <motion.div
+          initial={fromRightInitial}
+          whileInView={inViewAnimation}
+          className="about-content"
+        >
+          <motion.h2
+            initial={fromTopInitial}
+            whileInView={inViewAnimation}
+            className="heading"
+          >
             About <span>Me</span>
-          </h2>
+          </motion.h2>
           <h3>Full Stack Developer!</h3>
           <p>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore
@@ -119,16 +198,24 @@ export default function Home() {
           <a href="#" className="btn">
             Read More
           </a>
-        </div>
+        </motion.div>
       </section>
 
       {/* Services Section */}
       <section className="services" id="services">
-        <h2 className="heading">
+        <motion.h2
+          initial={fromTopInitial}
+          whileInView={inViewAnimation}
+          className="heading"
+        >
           Our <span>Services</span>
-        </h2>
+        </motion.h2>
 
-        <div className="services-container">
+        <motion.div
+          initial={fromBottomInitial}
+          whileInView={inViewAnimation}
+          className="services-container"
+        >
           <div className="services-box">
             <i className="bx bx-code-alt"></i>
             <h3>Web Development</h3>
@@ -167,17 +254,25 @@ export default function Home() {
               Read More
             </a>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Portfolio Section */}
       <section className="portfolio" id="portfolio">
-        <h2 className="heading">
+        <motion.h2
+          initial={fromTopInitial}
+          whileInView={inViewAnimation}
+          className="heading"
+        >
           Latest <span>Project</span>
-        </h2>
+        </motion.h2>
 
         <div className="portfolio-container">
-          <div className="portfolio-box">
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="1.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -189,8 +284,12 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
-          <div className="portfolio-box">
+          </motion.div>
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="2.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -202,8 +301,12 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
-          <div className="portfolio-box">
+          </motion.div>
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="3.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -215,8 +318,12 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
-          <div className="portfolio-box">
+          </motion.div>
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="4.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -228,8 +335,12 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
-          <div className="portfolio-box">
+          </motion.div>
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="5.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -241,8 +352,12 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
-          <div className="portfolio-box">
+          </motion.div>
+          <motion.div
+            initial={fromBottomInitial}
+            whileInView={inViewAnimation}
+            className="portfolio-box"
+          >
             <img src="1.jpeg" alt="" />
             <div className="portfolio-layer">
               <h4>Web Design</h4>
@@ -254,17 +369,26 @@ export default function Home() {
                 <i className="bx bx-link-external"></i>
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Contact Section */}
       <section className="contact" id="contact">
-        <h2 className="heading">
+        <motion.h2
+          initial={fromTopInitial}
+          whileInView={inViewAnimation}
+          className="heading"
+        >
           Contact <span>Me!</span>
-        </h2>
+        </motion.h2>
 
-        <form action="#" autoComplete="off">
+        <motion.form
+          initial={fromBottomInitial}
+          whileInView={inViewAnimation}
+          action="#"
+          autoComplete="off"
+        >
           <div className="input-box">
             <input type="text" placeholder="Full Name" />
             <input type="email" placeholder="Email Address" />
@@ -281,7 +405,7 @@ export default function Home() {
             placeholder="Your Message"
           ></textarea>
           <input type="submit" value="Send Messaage" className="btn" />
-        </form>
+        </motion.form>
       </section>
 
       {/* Footer Section */}
